@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airline Ticket Booking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        .cover {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('{{ url_for('static', filename='images/air.jpg') }}') no-repeat center center/cover;
+            color: white;
+        }
+        .cover-text {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <div class="cover-text">
+            <h1>Welcome to Our Airline Service</h1>
+            <p>Your comfort, our priority.</p>
+            <a href="#main-content" class="btn waves-effect waves-light">Get Started</a>
+        </div>
+    </div>
+
+    <div id="main-content" class="container">
+        <h3>Airline Ticket Booking System</h3>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="card-panel {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h4>Register Customer</h4>
+        <form action="{{ url_for('register_customer') }}" method="post">
+            <div class="input-field">
+                <input type="text" name="custno" required>
+                <label for="custno">Customer Number</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="name" required>
+                <label for="name">Name</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="addr" required>
+                <label for="addr">Address</label>
+            </div>
+            <div class="input-field">
+                <input type="email" name="email" required>
+                <label for="email">Email Address</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="jrdate" required>
+                <label for="jrdate">Date of Journey (YYYY-MM-DD)</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="source" required>
+                <label for="source">Source</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="destination" required>
+                <label for="destination">Destination</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Register Customer</button>
+        </form>
+
+        <h4>Calculate Ticket Price</h4>
+        <form action="{{ url_for('calculate_ticket_price') }}" method="post">
+            <div class="input-field">
+                <input type="text" name="custno_calc" required>
+                <label for="custno_calc">Enter Customer Number</label>
+            </div>
+            <div class="input-field">
+                <select name="class_type" required>
+                    <option value="1">First Class (Rs 6000 PN)</option>
+                    <option value="2">Business Class (Rs 4000 PN)</option>
+                    <option value="3">Economy Class (Rs 2000 PN)</option>
+                </select>
+                <label for="class_type">Select Class Type</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="passengers" required>
+                <label for="passengers">Number of Passengers</label>
+            </div>
+            <div class="input-field">
+                <input type="text" name="luggage" required>
+                <label for="luggage">Luggage Weight (Rs.100 per kg)</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Calculate Ticket Price</button>
+        </form>
+
+        <h4>Display Customer Details</h4>
+        <form action="{{ url_for('display_customer_details') }}" method="post">
+            <div class="input-field">
+                <input type="text" name="custno_display" required>
+                <label for="custno_display">Enter Customer Number</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Display Customer Details</button>
+        </form>
+        
+        <h4>Cancel Ticket</h4>
+        <form action="{{ url_for('cancel_ticket') }}" method="post">
+            <div class="input-field">
+                <input type="text" name="custno_cancel" id="custno_cancel" required>
+                <label for="custno_cancel">Customer Number to Cancel Ticket</label>
+            </div>
+            <button type="submit" class="btn waves-effect waves-light">Cancel Ticket</button>
+        </form>
+
+        <h4>Display All Details</h4>
+        <form action="{{ url_for('display_all_details') }}" method="get">
+            <button class="btn waves-effect waves-light" type="submit">Display All Details</button>
+        </form>
+
+        <!-- Display Results -->
+        {% if customer_details %}
+            <h4>Customer Details</h4>
+            <ul class="collection">
+                {% for detail in customer_details %}
+                    <li class="collection-item">{{ detail }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        {% if all_details %}
+            <h4>All Customer Details</h4>
+            <ul class="collection">
+                {% for detail in all_details %}
+                    <li class="collection-item">{{ detail }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form action="{{ url_for('index') }}">
+            <button class="btn waves-effect waves-light" type="submit">Back to Home</button>
+        </form>
+    </div>
+
+    <!-- Include Materialize JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>
+</body>
+</html>
